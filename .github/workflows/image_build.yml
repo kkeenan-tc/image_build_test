@@ -8,8 +8,6 @@ on:
 
 jobs:
   version_bump:
-    outputs:
-      docker_tag: ${{ steps.bumpver.outputs.docker_tag }}
     env:
       minor_inc: ${{ contains(github.event.pull_request.title, '[minor]') && 1 || 0 }}
       major_inc: ${{ contains(github.event.pull_request.title, '[major]') && 1 || 0 }}
@@ -52,4 +50,3 @@ jobs:
           image_name: ${{ github.repository }}  # it will be lowercased internally
           github_token: ${{ secrets.GITHUB_TOKEN }}
           image_tag: $docker_tag
-    
