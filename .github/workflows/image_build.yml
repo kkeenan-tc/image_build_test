@@ -1,4 +1,4 @@
-name: Bump Version
+name: Docker build and Bump Version Branch
 
 on:
   pull_request:
@@ -43,7 +43,7 @@ jobs:
       - name: Get version
         id: version
         run: |
-         echo "version=$(cat version.py | awk -F- '{ print $1 }' | awk -F'"' '{ print $2 }')" >> $GITHUB_OUTPUT
+         echo "version=$(cat version.py | awk -F- '{ print $1 }' | awk -F'"' '{ print $2 }')-$(${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}})" >> $GITHUB_OUTPUT
       - name: Build and publish a Docker image for ${{ github.repository }}
         uses: macbre/push-to-ghcr@master
         env:
