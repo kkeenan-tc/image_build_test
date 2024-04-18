@@ -37,6 +37,7 @@ jobs:
           NEW_VERSION=$(cat version.py | awk -F- '{ print $1 }' | awk -F'"' '{ print $2 }' | awk -v hotfix="$HOTFIX" -F. '{ major=$1; minor=$2; patch=$3; major += ${{env.major_inc}}; minor += ${{env.minor_inc}}; patch += ${{env.patch_inc}}; minor *= ${{env.minor_keep}}; patch *= ${{env.patch_keep}}; printf("__version__ = \"%d.%d.%d%s\"\n", major, minor, patch, hotfix); }')
           echo $NEW_VERSION > version.py
           echo "docker_tag=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "$GITHUB_VERSION"
           git add version.py
           git commit -m "[version bumped to ${NEW_VERSION}]"
           git push origin ${{github.event.pull_request.head.ref}}
