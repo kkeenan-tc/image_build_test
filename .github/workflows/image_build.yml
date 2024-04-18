@@ -3,6 +3,8 @@ name: Docker build and Bump Version Branch
 on:
   pull_request:
     branches: [ "main" ]
+  push:
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -37,7 +39,7 @@ jobs:
           git add version.py
           git commit -m "[version bumped to ${NEW_VERSION}]"
           git push origin ${{github.event.pull_request.head.ref}}
-        if: github.ref != 'refs/heads/master'
+        if: github.ref != 'refs/heads/main'
 
       - name: Set version
         id: version
