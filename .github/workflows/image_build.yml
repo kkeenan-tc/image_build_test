@@ -8,6 +8,8 @@ on:
 
 jobs:
   version_bump:
+    outputs:
+      docker_tag: ${{ steps.bumpver.outputs.docker_tag }}
     env:
       minor_inc: ${{ contains(github.event.pull_request.title, '[minor]') && 1 || 0 }}
       major_inc: ${{ contains(github.event.pull_request.title, '[major]') && 1 || 0 }}
@@ -24,6 +26,7 @@ jobs:
           ref: ${{github.event.pull_request.head.ref}}
           repository: ${{github.event.pull_request.head.repo.full_name}}
       - name: Bump Version
+        id: bumpver
         run: |
           cd ${GITHUB_WORKSPACE}
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
@@ -46,5 +49,5 @@ jobs:
         with:
           image_name: ${{ github.repository }}  # it will be lowercased internally
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          image_tag: ${{ steps.vars.outputs.docker_tag }}
+          image_tag: ${{ steps.bumpver.outputs.docker_tag }}
     
