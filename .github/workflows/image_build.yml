@@ -3,9 +3,6 @@ name: Docker build and Bump Version Branch
 on:
   pull_request:
     branches: [ "main" ]
-  push:
-    branches:
-      - master
   workflow_dispatch:
 
 jobs:
@@ -40,18 +37,20 @@ jobs:
           git add version.py
           git commit -m "[version bumped to ${NEW_VERSION}]"
           git push origin ${{github.event.pull_request.head.ref}}
+        if: github.ref != 'refs/heads/master'
 
-      # https://github.com/marketplace/actions/push-to-ghcr
-      - name: Get version
+      - name: Set version
         id: version
         run: |
          branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}} 
-         echo "$branch"
-         echo "version=$(cat version.py | awk -F- '{ print $1 }' | awk -F'"' '{ print $2 }')" >> $GITHUB_OUTPUT
+         version=$(cat version.py | awk -F- '{ print $1 }' | awk -F'"' '{ print $2 }')
+         [[ $branch != "main" ]] &&  echo "tag=${version}-${branch}">> $GITHUB_OUTPUT || echo "tag=${version}>> $GITHUB_OUTPUT"
+
+      # https://github.com/marketplace/actions/push-to-ghcr
       - name: Build and publish a Docker image for ${{ github.repository }}
         uses: macbre/push-to-ghcr@master
         env:
-            docker_tag: ${{ steps.version.outputs.version }}
+            docker_tag: ${{ steps.version.outputs.tag }}
         with:
           image_name: ${{ github.repository }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
