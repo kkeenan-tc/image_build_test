@@ -8,7 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  version_bump:
+  version_bump_docker_build:
+    name: Bump version and build docker image
     env:
       minor_inc: ${{ contains(github.event.pull_request.title, '[minor]') && 1 || 0 }}
       major_inc: ${{ contains(github.event.pull_request.title, '[major]') && 1 || 0 }}
@@ -46,7 +47,7 @@ jobs:
         run: |
          branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}} 
          version=$(cat version.py | awk -F- '{ print $1 }' | awk -F'"' '{ print $2 }')
-         [[ $branch != "main" ]] &&  echo "tag=${version}-${branch}">> $GITHUB_OUTPUT || echo "tag=${version}>> $GITHUB_OUTPUT"
+         [[ $branch != "main" ]] &&  echo "tag=${version}-${branch}">> $GITHUB_OUTPUT || echo "tag=${version}">> $GITHUB_OUTPUT
 
       # https://github.com/marketplace/actions/push-to-ghcr
       - name: Build and publish a Docker image for ${{ github.repository }}
