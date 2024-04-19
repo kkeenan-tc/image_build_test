@@ -8,4 +8,4 @@ on:
   workflow_dispatch:
 jobs:
   version_bump_docker:
-    uses: tucowsinc/wavelo-platforms-automation/.github/workflows/version_docker.yml@1a0118d
+    uses: tucowsinc/wavelo-platforms-automation/.github/workflows/version_docker.yml@1a0118d3d6612afa7f289a7866327c454f64d8cc
