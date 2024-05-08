@@ -46,6 +46,7 @@ jobs:
         id: version
         run: |
          branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}} 
+         branch=$( echo $branch | sed 's|/|_|g' )
          version=$(cat version.py | awk -F- '{ print $1 }' | awk -F'"' '{ print $2 }')
          [[ $branch != "main" ]] &&  echo "tag=${version}-${branch}">> $GITHUB_OUTPUT || echo "tag=${version}">> $GITHUB_OUTPUT
 
